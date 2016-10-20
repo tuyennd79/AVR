@@ -24,7 +24,137 @@ Data Stack size         : 256
 #include <mega16.h>
 #include <delay.h>
 
+#define DIR1    PORTC.2
+#define DIR2    PORTC.3
+
+#define EN1     PORTD.7
+#define EN2     PORTD.6
+
+#define DATA_SENSOR     PINA
+
+#define CENTER  0b11100111
+
+#define LEFT1   0b11110111
+#define LEFT2   0b11110011
+#define LEFT3   0b11110001
+#define LEFT4   0b11111001
+#define LEFT5   0b11111000
+#define LEFT6   0b11111100
+#define LEFT7   0b11111110
+
+#define RIGHT1  0b11101111
+#define RIGHT2  0b11001111
+#define RIGHT3  0b10001111
+#define RIGHT4  0b10011111
+#define RIGHT5  0b00011111
+#define RIGHT6  0b00111111
+#define RIGHT7  0b01111111
+
+
+#define VT1     4000
+#define VT2     4500    
+
+
 // Declare your global variables here
+
+
+void Forward(unsigned int v_left, unsigned int v_right)
+{
+    OCR1A = v_right;   
+    OCR1B = v_left;
+    DIR1 = 1;
+    DIR2 = 1;
+    EN1 = 1;
+    EN2 = 1;     
+}
+
+void Back(unsigned int v_left, unsigned int v_right)
+{
+    OCR1A = v_right;
+    OCR1B = v_left;
+    DIR1 = 0;
+    DIR2 = 0;
+    EN1 = 1;
+    EN2 = 1;     
+}
+
+
+void Stop(void)
+{
+    EN1 = 0;
+    EN2 = 0;     
+}
+
+void FirstRoad(void)
+{
+    if(DATA_SENSOR==CENTER)
+    {
+        Forward(VT1,VT2);
+    }
+    
+    if(DATA_SENSOR==LEFT1)
+    {
+        Forward(VT1,2500);
+    }
+    if(DATA_SENSOR==LEFT2)
+    {
+        Forward(VT1,2000);
+    } 
+    if(DATA_SENSOR==LEFT3)
+    {
+        Forward(VT1,1800);
+    }
+    if(DATA_SENSOR==LEFT4)
+    {
+        Forward(VT1,1600);
+    }
+    if(DATA_SENSOR==LEFT5)
+    {
+        Forward(VT1,1400);
+    }
+    if(DATA_SENSOR==LEFT6)
+    {
+        Forward(VT1,1200);
+    }
+    if(DATA_SENSOR==LEFT7)
+    {
+        Forward(VT1,500);
+    }       
+    
+    if(DATA_SENSOR==RIGHT1)
+    {
+        Forward(2500,VT2);
+    }
+    if(DATA_SENSOR==RIGHT2)
+    {
+        Forward(2000,VT2);
+    } 
+    if(DATA_SENSOR==RIGHT3)
+    {
+        Forward(1800,VT2);
+    }
+    if(DATA_SENSOR==RIGHT4)
+    {
+        Forward(1600,VT2);
+    }
+    if(DATA_SENSOR==RIGHT5)
+    {
+        Forward(1400,VT2);
+    }
+    if(DATA_SENSOR==RIGHT6)
+    {
+        Forward(1200,VT2);
+    }
+    if(DATA_SENSOR==RIGHT7)
+    {
+        Forward(500,VT2);
+    } 
+    
+    if(DATA_SENSOR==0x00)
+    {
+        //Stop();
+    }       
+}
 
 void main(void)
 {
@@ -128,10 +258,12 @@ SPCR=0x00;
 // TWI initialization
 // TWI disabled
 TWCR=0x00;
+ICR1=8000;
 
 while (1)
       {
-      // Place your code here
-
+      // Place your code here 
+      FirstRoad(); 
+      //Forward(6800,7000);
       }
 }

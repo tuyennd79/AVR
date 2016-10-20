@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  F:\Git_SourceCode\AVR\Robocon_mini\List\Project.asm Thu Oct 20 23:06:39 2016
+AVRASM ver. 2.1.30  F:\Git_SourceCode\AVR\Robocon_mini\List\Project.asm Fri Oct 21 00:21:56 2016
 
                  
                  
@@ -1133,7 +1133,7 @@ AVRASM ver. 2.1.30  F:\Git_SourceCode\AVR\Robocon_mini\List\Project.asm Thu Oct 
 000044 e6c0      	LDI  R28,LOW(__SRAM_START+__DSTACK_SIZE)
 000045 e0d1      	LDI  R29,HIGH(__SRAM_START+__DSTACK_SIZE)
                  
-000046 940c 0048 	JMP  _main
+000046 940c 00b8 	JMP  _main
                  
                  	.ESEG
                  	.ORG 0
@@ -1179,176 +1179,474 @@ AVRASM ver. 2.1.30  F:\Git_SourceCode\AVR\Robocon_mini\List\Project.asm Thu Oct 
                  	#endif
                  ;#include <delay.h>
                  ;
+                 ;#define DIR1    PORTC.2
+                 ;#define DIR2    PORTC.3
+                 ;
+                 ;#define EN1     PORTD.7
+                 ;#define EN2     PORTD.6
+                 ;
+                 ;#define DATA_SENSOR     PINA
+                 ;
+                 ;#define CENTER  0b11100111
+                 ;
+                 ;#define LEFT1   0b11110111
+                 ;#define LEFT2   0b11110011
+                 ;#define LEFT3   0b11110001
+                 ;#define LEFT4   0b11111001
+                 ;#define LEFT5   0b11111000
+                 ;#define LEFT6   0b11111100
+                 ;#define LEFT7   0b11111110
+                 ;
+                 ;#define RIGHT1  0b11101111
+                 ;#define RIGHT2  0b11001111
+                 ;#define RIGHT3  0b10001111
+                 ;#define RIGHT4  0b10011111
+                 ;#define RIGHT5  0b00011111
+                 ;#define RIGHT6  0b00111111
+                 ;#define RIGHT7  0b01111111
+                 ;
+                 ;
+                 ;#define VT1     4000
+                 ;#define VT2     4500
+                 ;
+                 ;
                  ;// Declare your global variables here
                  ;
-                 ;void main(void)
-                 ; 0000 001E {
+                 ;
+                 ;void Forward(unsigned int v_left, unsigned int v_right)
+                 ; 0000 003E {
                  
                  	.CSEG
-                 _main:
-                 ; 0000 001F // Declare your local variables here
-                 ; 0000 0020 
-                 ; 0000 0021 // Input/Output Ports initialization
-                 ; 0000 0022 // Port A initialization
-                 ; 0000 0023 // Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In
-                 ; 0000 0024 // State7=P State6=P State5=P State4=P State3=P State2=P State1=P State0=P
-                 ; 0000 0025 PORTA=0xFF;
-000048 efef      	LDI  R30,LOW(255)
-000049 bbeb      	OUT  0x1B,R30
-                 ; 0000 0026 DDRA=0x00;
-00004a e0e0      	LDI  R30,LOW(0)
-00004b bbea      	OUT  0x1A,R30
-                 ; 0000 0027 
-                 ; 0000 0028 // Port B initialization
-                 ; 0000 0029 // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
-                 ; 0000 002A // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
-                 ; 0000 002B PORTB=0x00;
-00004c bbe8      	OUT  0x18,R30
-                 ; 0000 002C DDRB=0xFF;
-00004d efef      	LDI  R30,LOW(255)
-00004e bbe7      	OUT  0x17,R30
-                 ; 0000 002D 
-                 ; 0000 002E // Port C initialization
-                 ; 0000 002F // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
-                 ; 0000 0030 // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
-                 ; 0000 0031 PORTC=0x00;
-00004f e0e0      	LDI  R30,LOW(0)
-000050 bbe5      	OUT  0x15,R30
-                 ; 0000 0032 DDRC=0xFF;
-000051 efef      	LDI  R30,LOW(255)
-000052 bbe4      	OUT  0x14,R30
-                 ; 0000 0033 
-                 ; 0000 0034 // Port D initialization
-                 ; 0000 0035 // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
-                 ; 0000 0036 // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
-                 ; 0000 0037 PORTD=0x00;
-000053 e0e0      	LDI  R30,LOW(0)
-000054 bbe2      	OUT  0x12,R30
-                 ; 0000 0038 DDRD=0xFF;
-000055 efef      	LDI  R30,LOW(255)
-000056 bbe1      	OUT  0x11,R30
-                 ; 0000 0039 
-                 ; 0000 003A // Timer/Counter 0 initialization
-                 ; 0000 003B // Clock source: System Clock
-                 ; 0000 003C // Clock value: Timer 0 Stopped
-                 ; 0000 003D // Mode: Normal top=0xFF
-                 ; 0000 003E // OC0 output: Disconnected
-                 ; 0000 003F TCCR0=0x00;
-000057 e0e0      	LDI  R30,LOW(0)
-000058 bfe3      	OUT  0x33,R30
-                 ; 0000 0040 TCNT0=0x00;
-000059 bfe2      	OUT  0x32,R30
-                 ; 0000 0041 OCR0=0x00;
-00005a bfec      	OUT  0x3C,R30
-                 ; 0000 0042 
-                 ; 0000 0043 // Timer/Counter 1 initialization
-                 ; 0000 0044 // Clock source: System Clock
-                 ; 0000 0045 // Clock value: 16000.000 kHz
-                 ; 0000 0046 // Mode: Fast PWM top=ICR1
-                 ; 0000 0047 // OC1A output: Non-Inv.
-                 ; 0000 0048 // OC1B output: Non-Inv.
-                 ; 0000 0049 // Noise Canceler: Off
-                 ; 0000 004A // Input Capture on Falling Edge
-                 ; 0000 004B // Timer1 Overflow Interrupt: Off
-                 ; 0000 004C // Input Capture Interrupt: Off
-                 ; 0000 004D // Compare A Match Interrupt: Off
-                 ; 0000 004E // Compare B Match Interrupt: Off
-                 ; 0000 004F TCCR1A=0xA2;
-00005b eae2      	LDI  R30,LOW(162)
-00005c bdef      	OUT  0x2F,R30
-                 ; 0000 0050 TCCR1B=0x19;
-00005d e1e9      	LDI  R30,LOW(25)
-00005e bdee      	OUT  0x2E,R30
-                 ; 0000 0051 TCNT1H=0x00;
-00005f e0e0      	LDI  R30,LOW(0)
-000060 bded      	OUT  0x2D,R30
-                 ; 0000 0052 TCNT1L=0x00;
-000061 bdec      	OUT  0x2C,R30
-                 ; 0000 0053 ICR1H=0x1F;
-000062 e1ef      	LDI  R30,LOW(31)
-000063 bde7      	OUT  0x27,R30
-                 ; 0000 0054 ICR1L=0x40;
-000064 e4e0      	LDI  R30,LOW(64)
-000065 bde6      	OUT  0x26,R30
-                 ; 0000 0055 OCR1AH=0x00;
-000066 e0e0      	LDI  R30,LOW(0)
-000067 bdeb      	OUT  0x2B,R30
-                 ; 0000 0056 OCR1AL=0x00;
-000068 bdea      	OUT  0x2A,R30
-                 ; 0000 0057 OCR1BH=0x00;
-000069 bde9      	OUT  0x29,R30
-                 ; 0000 0058 OCR1BL=0x00;
-00006a bde8      	OUT  0x28,R30
-                 ; 0000 0059 
-                 ; 0000 005A // Timer/Counter 2 initialization
-                 ; 0000 005B // Clock source: System Clock
-                 ; 0000 005C // Clock value: Timer2 Stopped
-                 ; 0000 005D // Mode: Normal top=0xFF
-                 ; 0000 005E // OC2 output: Disconnected
-                 ; 0000 005F ASSR=0x00;
-00006b bde2      	OUT  0x22,R30
-                 ; 0000 0060 TCCR2=0x00;
-00006c bde5      	OUT  0x25,R30
-                 ; 0000 0061 TCNT2=0x00;
-00006d bde4      	OUT  0x24,R30
-                 ; 0000 0062 OCR2=0x00;
-00006e bde3      	OUT  0x23,R30
-                 ; 0000 0063 
-                 ; 0000 0064 // External Interrupt(s) initialization
-                 ; 0000 0065 // INT0: Off
-                 ; 0000 0066 // INT1: Off
-                 ; 0000 0067 // INT2: Off
-                 ; 0000 0068 MCUCR=0x00;
-00006f bfe5      	OUT  0x35,R30
-                 ; 0000 0069 MCUCSR=0x00;
-000070 bfe4      	OUT  0x34,R30
-                 ; 0000 006A 
-                 ; 0000 006B // Timer(s)/Counter(s) Interrupt(s) initialization
-                 ; 0000 006C TIMSK=0x00;
-000071 bfe9      	OUT  0x39,R30
-                 ; 0000 006D 
-                 ; 0000 006E // USART initialization
-                 ; 0000 006F // USART disabled
-                 ; 0000 0070 UCSRB=0x00;
-000072 b9ea      	OUT  0xA,R30
-                 ; 0000 0071 
-                 ; 0000 0072 // Analog Comparator initialization
-                 ; 0000 0073 // Analog Comparator: Off
-                 ; 0000 0074 // Analog Comparator Input Capture by Timer/Counter 1: Off
-                 ; 0000 0075 ACSR=0x80;
-000073 e8e0      	LDI  R30,LOW(128)
-000074 b9e8      	OUT  0x8,R30
-                 ; 0000 0076 SFIOR=0x00;
-000075 e0e0      	LDI  R30,LOW(0)
-000076 bfe0      	OUT  0x30,R30
-                 ; 0000 0077 
-                 ; 0000 0078 // ADC initialization
-                 ; 0000 0079 // ADC disabled
-                 ; 0000 007A ADCSRA=0x00;
-000077 b9e6      	OUT  0x6,R30
+                 _Forward:
+                 ; 0000 003F     OCR1A = v_right;
+                 ;	v_left -> Y+2
+                 ;	v_right -> Y+0
+000048 81e8      	LD   R30,Y
+000049 81f9      	LDD  R31,Y+1
+00004a bdfb      	OUT  0x2A+1,R31
+00004b bdea      	OUT  0x2A,R30
+                 ; 0000 0040     OCR1B = v_left;
+00004c 81ea      	LDD  R30,Y+2
+00004d 81fb      	LDD  R31,Y+2+1
+00004e bdf9      	OUT  0x28+1,R31
+00004f bde8      	OUT  0x28,R30
+                 ; 0000 0041     DIR1 = 1;
+000050 9aaa      	SBI  0x15,2
+                 ; 0000 0042     DIR2 = 1;
+000051 9aab      	SBI  0x15,3
+                 ; 0000 0043     EN1 = 1;
+000052 9a97      	SBI  0x12,7
+                 ; 0000 0044     EN2 = 1;
+000053 9a96      	SBI  0x12,6
+                 ; 0000 0045 }
+000054 9624      	ADIW R28,4
+000055 9508      	RET
+                 ;
+                 ;void Back(unsigned int v_left, unsigned int v_right)
+                 ; 0000 0048 {
+                 ; 0000 0049     OCR1A = v_right;
+                 ;	v_left -> Y+2
+                 ;	v_right -> Y+0
+                 ; 0000 004A     OCR1B = v_left;
+                 ; 0000 004B     DIR1 = 0;
+                 ; 0000 004C     DIR2 = 0;
+                 ; 0000 004D     EN1 = 1;
+                 ; 0000 004E     EN2 = 1;
+                 ; 0000 004F }
+                 ;
+                 ;
+                 ;void Stop(void)
+                 ; 0000 0053 {
+                 ; 0000 0054     EN1 = 0;
+                 ; 0000 0055     EN2 = 0;
+                 ; 0000 0056 }
+                 ;
+                 ;void FirstRoad(void)
+                 ; 0000 0059 {
+                 _FirstRoad:
+                 ; 0000 005A     if(DATA_SENSOR==CENTER)
+000056 b3e9      	IN   R30,0x19
+000057 3ee7      	CPI  R30,LOW(0xE7)
+000058 f411      	BRNE _0x17
+                 ; 0000 005B     {
+                 ; 0000 005C         Forward(VT1,VT2);
+000059 d097      	RCALL SUBOPT_0x0
+00005a d09b      	RCALL SUBOPT_0x1
+                 ; 0000 005D     }
+                 ; 0000 005E 
+                 ; 0000 005F     if(DATA_SENSOR==LEFT1)
+                 _0x17:
+00005b b3e9      	IN   R30,0x19
+00005c 3fe7      	CPI  R30,LOW(0xF7)
+00005d f421      	BRNE _0x18
+                 ; 0000 0060     {
+                 ; 0000 0061         Forward(VT1,2500);
+00005e d092      	RCALL SUBOPT_0x0
+00005f ece4      	LDI  R30,LOW(2500)
+000060 e0f9      	LDI  R31,HIGH(2500)
+000061 d099      	RCALL SUBOPT_0x2
+                 ; 0000 0062     }
+                 ; 0000 0063     if(DATA_SENSOR==LEFT2)
+                 _0x18:
+000062 b3e9      	IN   R30,0x19
+000063 3fe3      	CPI  R30,LOW(0xF3)
+000064 f421      	BRNE _0x19
+                 ; 0000 0064     {
+                 ; 0000 0065         Forward(VT1,2000);
+000065 d08b      	RCALL SUBOPT_0x0
+000066 ede0      	LDI  R30,LOW(2000)
+000067 e0f7      	LDI  R31,HIGH(2000)
+000068 d092      	RCALL SUBOPT_0x2
+                 ; 0000 0066     }
+                 ; 0000 0067     if(DATA_SENSOR==LEFT3)
+                 _0x19:
+000069 b3e9      	IN   R30,0x19
+00006a 3fe1      	CPI  R30,LOW(0xF1)
+00006b f421      	BRNE _0x1A
+                 ; 0000 0068     {
+                 ; 0000 0069         Forward(VT1,1800);
+00006c d084      	RCALL SUBOPT_0x0
+00006d e0e8      	LDI  R30,LOW(1800)
+00006e e0f7      	LDI  R31,HIGH(1800)
+00006f d08b      	RCALL SUBOPT_0x2
+                 ; 0000 006A     }
+                 ; 0000 006B     if(DATA_SENSOR==LEFT4)
+                 _0x1A:
+000070 b3e9      	IN   R30,0x19
+000071 3fe9      	CPI  R30,LOW(0xF9)
+000072 f421      	BRNE _0x1B
+                 ; 0000 006C     {
+                 ; 0000 006D         Forward(VT1,1600);
+000073 d07d      	RCALL SUBOPT_0x0
+000074 e4e0      	LDI  R30,LOW(1600)
+000075 e0f6      	LDI  R31,HIGH(1600)
+000076 d084      	RCALL SUBOPT_0x2
+                 ; 0000 006E     }
+                 ; 0000 006F     if(DATA_SENSOR==LEFT5)
+                 _0x1B:
+000077 b3e9      	IN   R30,0x19
+000078 3fe8      	CPI  R30,LOW(0xF8)
+000079 f421      	BRNE _0x1C
+                 ; 0000 0070     {
+                 ; 0000 0071         Forward(VT1,1400);
+00007a d076      	RCALL SUBOPT_0x0
+00007b e7e8      	LDI  R30,LOW(1400)
+00007c e0f5      	LDI  R31,HIGH(1400)
+00007d d07d      	RCALL SUBOPT_0x2
+                 ; 0000 0072     }
+                 ; 0000 0073     if(DATA_SENSOR==LEFT6)
+                 _0x1C:
+00007e b3e9      	IN   R30,0x19
+00007f 3fec      	CPI  R30,LOW(0xFC)
+000080 f421      	BRNE _0x1D
+                 ; 0000 0074     {
+                 ; 0000 0075         Forward(VT1,1200);
+000081 d06f      	RCALL SUBOPT_0x0
+000082 ebe0      	LDI  R30,LOW(1200)
+000083 e0f4      	LDI  R31,HIGH(1200)
+000084 d076      	RCALL SUBOPT_0x2
+                 ; 0000 0076     }
+                 ; 0000 0077     if(DATA_SENSOR==LEFT7)
+                 _0x1D:
+000085 b3e9      	IN   R30,0x19
+000086 3fee      	CPI  R30,LOW(0xFE)
+000087 f421      	BRNE _0x1E
+                 ; 0000 0078     {
+                 ; 0000 0079         Forward(VT1,500);
+000088 d068      	RCALL SUBOPT_0x0
+000089 efe4      	LDI  R30,LOW(500)
+00008a e0f1      	LDI  R31,HIGH(500)
+00008b d06f      	RCALL SUBOPT_0x2
+                 ; 0000 007A     }
                  ; 0000 007B 
-                 ; 0000 007C // SPI initialization
-                 ; 0000 007D // SPI disabled
-                 ; 0000 007E SPCR=0x00;
-000078 b9ed      	OUT  0xD,R30
-                 ; 0000 007F 
-                 ; 0000 0080 // TWI initialization
-                 ; 0000 0081 // TWI disabled
-                 ; 0000 0082 TWCR=0x00;
-000079 bfe6      	OUT  0x36,R30
-                 ; 0000 0083 
-                 ; 0000 0084 while (1)
-                 _0x3:
-                 ; 0000 0085       {
-                 ; 0000 0086       // Place your code here
-                 ; 0000 0087 
-                 ; 0000 0088       }
-00007a cfff      	RJMP _0x3
-                 ; 0000 0089 }
-                 _0x6:
-00007b cfff      	RJMP _0x6
+                 ; 0000 007C     if(DATA_SENSOR==RIGHT1)
+                 _0x1E:
+00008c b3e9      	IN   R30,0x19
+00008d 3eef      	CPI  R30,LOW(0xEF)
+00008e f419      	BRNE _0x1F
+                 ; 0000 007D     {
+                 ; 0000 007E         Forward(2500,VT2);
+00008f ece4      	LDI  R30,LOW(2500)
+000090 e0f9      	LDI  R31,HIGH(2500)
+000091 d06c      	RCALL SUBOPT_0x3
+                 ; 0000 007F     }
+                 ; 0000 0080     if(DATA_SENSOR==RIGHT2)
+                 _0x1F:
+000092 b3e9      	IN   R30,0x19
+000093 3cef      	CPI  R30,LOW(0xCF)
+000094 f419      	BRNE _0x20
+                 ; 0000 0081     {
+                 ; 0000 0082         Forward(2000,VT2);
+000095 ede0      	LDI  R30,LOW(2000)
+000096 e0f7      	LDI  R31,HIGH(2000)
+000097 d066      	RCALL SUBOPT_0x3
+                 ; 0000 0083     }
+                 ; 0000 0084     if(DATA_SENSOR==RIGHT3)
+                 _0x20:
+000098 b3e9      	IN   R30,0x19
+000099 38ef      	CPI  R30,LOW(0x8F)
+00009a f419      	BRNE _0x21
+                 ; 0000 0085     {
+                 ; 0000 0086         Forward(1800,VT2);
+00009b e0e8      	LDI  R30,LOW(1800)
+00009c e0f7      	LDI  R31,HIGH(1800)
+00009d d060      	RCALL SUBOPT_0x3
+                 ; 0000 0087     }
+                 ; 0000 0088     if(DATA_SENSOR==RIGHT4)
+                 _0x21:
+00009e b3e9      	IN   R30,0x19
+00009f 39ef      	CPI  R30,LOW(0x9F)
+0000a0 f419      	BRNE _0x22
+                 ; 0000 0089     {
+                 ; 0000 008A         Forward(1600,VT2);
+0000a1 e4e0      	LDI  R30,LOW(1600)
+0000a2 e0f6      	LDI  R31,HIGH(1600)
+0000a3 d05a      	RCALL SUBOPT_0x3
+                 ; 0000 008B     }
+                 ; 0000 008C     if(DATA_SENSOR==RIGHT5)
+                 _0x22:
+0000a4 b3e9      	IN   R30,0x19
+0000a5 31ef      	CPI  R30,LOW(0x1F)
+0000a6 f419      	BRNE _0x23
+                 ; 0000 008D     {
+                 ; 0000 008E         Forward(1400,VT2);
+0000a7 e7e8      	LDI  R30,LOW(1400)
+0000a8 e0f5      	LDI  R31,HIGH(1400)
+0000a9 d054      	RCALL SUBOPT_0x3
+                 ; 0000 008F     }
+                 ; 0000 0090     if(DATA_SENSOR==RIGHT6)
+                 _0x23:
+0000aa b3e9      	IN   R30,0x19
+0000ab 33ef      	CPI  R30,LOW(0x3F)
+0000ac f419      	BRNE _0x24
+                 ; 0000 0091     {
+                 ; 0000 0092         Forward(1200,VT2);
+0000ad ebe0      	LDI  R30,LOW(1200)
+0000ae e0f4      	LDI  R31,HIGH(1200)
+0000af d04e      	RCALL SUBOPT_0x3
+                 ; 0000 0093     }
+                 ; 0000 0094     if(DATA_SENSOR==RIGHT7)
+                 _0x24:
+0000b0 b3e9      	IN   R30,0x19
+0000b1 37ef      	CPI  R30,LOW(0x7F)
+0000b2 f419      	BRNE _0x25
+                 ; 0000 0095     {
+                 ; 0000 0096         Forward(500,VT2);
+0000b3 efe4      	LDI  R30,LOW(500)
+0000b4 e0f1      	LDI  R31,HIGH(500)
+0000b5 d048      	RCALL SUBOPT_0x3
+                 ; 0000 0097     }
+                 ; 0000 0098 
+                 ; 0000 0099     if(DATA_SENSOR==0x00)
+                 _0x25:
+0000b6 b3e9      	IN   R30,0x19
+                 ; 0000 009A     {
+                 ; 0000 009B         //Stop();
+                 ; 0000 009C     }
+                 ; 0000 009D }
+0000b7 9508      	RET
+                 ;
+                 ;void main(void)
+                 ; 0000 00A0 {
+                 _main:
+                 ; 0000 00A1 // Declare your local variables here
+                 ; 0000 00A2 
+                 ; 0000 00A3 // Input/Output Ports initialization
+                 ; 0000 00A4 // Port A initialization
+                 ; 0000 00A5 // Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In
+                 ; 0000 00A6 // State7=P State6=P State5=P State4=P State3=P State2=P State1=P State0=P
+                 ; 0000 00A7 PORTA=0xFF;
+0000b8 efef      	LDI  R30,LOW(255)
+0000b9 bbeb      	OUT  0x1B,R30
+                 ; 0000 00A8 DDRA=0x00;
+0000ba e0e0      	LDI  R30,LOW(0)
+0000bb bbea      	OUT  0x1A,R30
+                 ; 0000 00A9 
+                 ; 0000 00AA // Port B initialization
+                 ; 0000 00AB // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
+                 ; 0000 00AC // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
+                 ; 0000 00AD PORTB=0x00;
+0000bc bbe8      	OUT  0x18,R30
+                 ; 0000 00AE DDRB=0xFF;
+0000bd efef      	LDI  R30,LOW(255)
+0000be bbe7      	OUT  0x17,R30
+                 ; 0000 00AF 
+                 ; 0000 00B0 // Port C initialization
+                 ; 0000 00B1 // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
+                 ; 0000 00B2 // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
+                 ; 0000 00B3 PORTC=0x00;
+0000bf e0e0      	LDI  R30,LOW(0)
+0000c0 bbe5      	OUT  0x15,R30
+                 ; 0000 00B4 DDRC=0xFF;
+0000c1 efef      	LDI  R30,LOW(255)
+0000c2 bbe4      	OUT  0x14,R30
+                 ; 0000 00B5 
+                 ; 0000 00B6 // Port D initialization
+                 ; 0000 00B7 // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
+                 ; 0000 00B8 // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
+                 ; 0000 00B9 PORTD=0x00;
+0000c3 e0e0      	LDI  R30,LOW(0)
+0000c4 bbe2      	OUT  0x12,R30
+                 ; 0000 00BA DDRD=0xFF;
+0000c5 efef      	LDI  R30,LOW(255)
+0000c6 bbe1      	OUT  0x11,R30
+                 ; 0000 00BB 
+                 ; 0000 00BC // Timer/Counter 0 initialization
+                 ; 0000 00BD // Clock source: System Clock
+                 ; 0000 00BE // Clock value: Timer 0 Stopped
+                 ; 0000 00BF // Mode: Normal top=0xFF
+                 ; 0000 00C0 // OC0 output: Disconnected
+                 ; 0000 00C1 TCCR0=0x00;
+0000c7 e0e0      	LDI  R30,LOW(0)
+0000c8 bfe3      	OUT  0x33,R30
+                 ; 0000 00C2 TCNT0=0x00;
+0000c9 bfe2      	OUT  0x32,R30
+                 ; 0000 00C3 OCR0=0x00;
+0000ca bfec      	OUT  0x3C,R30
+                 ; 0000 00C4 
+                 ; 0000 00C5 // Timer/Counter 1 initialization
+                 ; 0000 00C6 // Clock source: System Clock
+                 ; 0000 00C7 // Clock value: 16000.000 kHz
+                 ; 0000 00C8 // Mode: Fast PWM top=ICR1
+                 ; 0000 00C9 // OC1A output: Non-Inv.
+                 ; 0000 00CA // OC1B output: Non-Inv.
+                 ; 0000 00CB // Noise Canceler: Off
+                 ; 0000 00CC // Input Capture on Falling Edge
+                 ; 0000 00CD // Timer1 Overflow Interrupt: Off
+                 ; 0000 00CE // Input Capture Interrupt: Off
+                 ; 0000 00CF // Compare A Match Interrupt: Off
+                 ; 0000 00D0 // Compare B Match Interrupt: Off
+                 ; 0000 00D1 TCCR1A=0xA2;
+0000cb eae2      	LDI  R30,LOW(162)
+0000cc bdef      	OUT  0x2F,R30
+                 ; 0000 00D2 TCCR1B=0x19;
+0000cd e1e9      	LDI  R30,LOW(25)
+0000ce bdee      	OUT  0x2E,R30
+                 ; 0000 00D3 TCNT1H=0x00;
+0000cf e0e0      	LDI  R30,LOW(0)
+0000d0 bded      	OUT  0x2D,R30
+                 ; 0000 00D4 TCNT1L=0x00;
+0000d1 bdec      	OUT  0x2C,R30
+                 ; 0000 00D5 ICR1H=0x1F;
+0000d2 e1ef      	LDI  R30,LOW(31)
+0000d3 bde7      	OUT  0x27,R30
+                 ; 0000 00D6 ICR1L=0x40;
+0000d4 e4e0      	LDI  R30,LOW(64)
+0000d5 bde6      	OUT  0x26,R30
+                 ; 0000 00D7 OCR1AH=0x00;
+0000d6 e0e0      	LDI  R30,LOW(0)
+0000d7 bdeb      	OUT  0x2B,R30
+                 ; 0000 00D8 OCR1AL=0x00;
+0000d8 bdea      	OUT  0x2A,R30
+                 ; 0000 00D9 OCR1BH=0x00;
+0000d9 bde9      	OUT  0x29,R30
+                 ; 0000 00DA OCR1BL=0x00;
+0000da bde8      	OUT  0x28,R30
+                 ; 0000 00DB 
+                 ; 0000 00DC // Timer/Counter 2 initialization
+                 ; 0000 00DD // Clock source: System Clock
+                 ; 0000 00DE // Clock value: Timer2 Stopped
+                 ; 0000 00DF // Mode: Normal top=0xFF
+                 ; 0000 00E0 // OC2 output: Disconnected
+                 ; 0000 00E1 ASSR=0x00;
+0000db bde2      	OUT  0x22,R30
+                 ; 0000 00E2 TCCR2=0x00;
+0000dc bde5      	OUT  0x25,R30
+                 ; 0000 00E3 TCNT2=0x00;
+0000dd bde4      	OUT  0x24,R30
+                 ; 0000 00E4 OCR2=0x00;
+0000de bde3      	OUT  0x23,R30
+                 ; 0000 00E5 
+                 ; 0000 00E6 // External Interrupt(s) initialization
+                 ; 0000 00E7 // INT0: Off
+                 ; 0000 00E8 // INT1: Off
+                 ; 0000 00E9 // INT2: Off
+                 ; 0000 00EA MCUCR=0x00;
+0000df bfe5      	OUT  0x35,R30
+                 ; 0000 00EB MCUCSR=0x00;
+0000e0 bfe4      	OUT  0x34,R30
+                 ; 0000 00EC 
+                 ; 0000 00ED // Timer(s)/Counter(s) Interrupt(s) initialization
+                 ; 0000 00EE TIMSK=0x00;
+0000e1 bfe9      	OUT  0x39,R30
+                 ; 0000 00EF 
+                 ; 0000 00F0 // USART initialization
+                 ; 0000 00F1 // USART disabled
+                 ; 0000 00F2 UCSRB=0x00;
+0000e2 b9ea      	OUT  0xA,R30
+                 ; 0000 00F3 
+                 ; 0000 00F4 // Analog Comparator initialization
+                 ; 0000 00F5 // Analog Comparator: Off
+                 ; 0000 00F6 // Analog Comparator Input Capture by Timer/Counter 1: Off
+                 ; 0000 00F7 ACSR=0x80;
+0000e3 e8e0      	LDI  R30,LOW(128)
+0000e4 b9e8      	OUT  0x8,R30
+                 ; 0000 00F8 SFIOR=0x00;
+0000e5 e0e0      	LDI  R30,LOW(0)
+0000e6 bfe0      	OUT  0x30,R30
+                 ; 0000 00F9 
+                 ; 0000 00FA // ADC initialization
+                 ; 0000 00FB // ADC disabled
+                 ; 0000 00FC ADCSRA=0x00;
+0000e7 b9e6      	OUT  0x6,R30
+                 ; 0000 00FD 
+                 ; 0000 00FE // SPI initialization
+                 ; 0000 00FF // SPI disabled
+                 ; 0000 0100 SPCR=0x00;
+0000e8 b9ed      	OUT  0xD,R30
+                 ; 0000 0101 
+                 ; 0000 0102 // TWI initialization
+                 ; 0000 0103 // TWI disabled
+                 ; 0000 0104 TWCR=0x00;
+0000e9 bfe6      	OUT  0x36,R30
+                 ; 0000 0105 ICR1=8000;
+0000ea e4e0      	LDI  R30,LOW(8000)
+0000eb e1ff      	LDI  R31,HIGH(8000)
+0000ec bdf7      	OUT  0x26+1,R31
+0000ed bde6      	OUT  0x26,R30
+                 ; 0000 0106 
+                 ; 0000 0107 while (1)
+                 _0x27:
+                 ; 0000 0108       {
+                 ; 0000 0109       // Place your code here
+                 ; 0000 010A       FirstRoad();
+0000ee df67      	RCALL _FirstRoad
+                 ; 0000 010B       //Forward(6800,7000);
+                 ; 0000 010C       }
+0000ef cffe      	RJMP _0x27
+                 ; 0000 010D }
+                 _0x2A:
+0000f0 cfff      	RJMP _0x2A
                  
                  	.CSEG
+                 ;OPTIMIZER ADDED SUBROUTINE, CALLED 8 TIMES, CODE SIZE REDUCTION:11 WORDS
+                 SUBOPT_0x0:
+0000f1 eae0      	LDI  R30,LOW(4000)
+0000f2 e0ff      	LDI  R31,HIGH(4000)
+0000f3 93fa      	ST   -Y,R31
+0000f4 93ea      	ST   -Y,R30
+0000f5 9508      	RET
+                 
+                 ;OPTIMIZER ADDED SUBROUTINE, CALLED 8 TIMES, CODE SIZE REDUCTION:25 WORDS
+                 SUBOPT_0x1:
+0000f6 e9e4      	LDI  R30,LOW(4500)
+0000f7 e1f1      	LDI  R31,HIGH(4500)
+0000f8 93fa      	ST   -Y,R31
+0000f9 93ea      	ST   -Y,R30
+0000fa cf4d      	RJMP _Forward
+                 
+                 ;OPTIMIZER ADDED SUBROUTINE, CALLED 7 TIMES, CODE SIZE REDUCTION:9 WORDS
+                 SUBOPT_0x2:
+0000fb 93fa      	ST   -Y,R31
+0000fc 93ea      	ST   -Y,R30
+0000fd cf4a      	RJMP _Forward
+                 
+                 ;OPTIMIZER ADDED SUBROUTINE, CALLED 7 TIMES, CODE SIZE REDUCTION:9 WORDS
+                 SUBOPT_0x3:
+0000fe 93fa      	ST   -Y,R31
+0000ff 93ea      	ST   -Y,R30
+000100 cff5      	RJMP SUBOPT_0x1
+                 
                  
                  	.CSEG
                  ;END OF CODE MARKER
@@ -1373,37 +1671,37 @@ ATmega16 register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
 r16:   0 r17:   0 r18:   0 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
-r24:   4 r25:   1 r26:   2 r27:   1 r28:   1 r29:   1 r30:  61 r31:   4 
-x  :   2 y  :   0 z  :   0 
-Registers used: 9 out of 35 (25.7%)
+r24:   4 r25:   1 r26:   2 r27:   1 r28:   2 r29:   1 r30: 118 r31:  30 
+x  :   2 y  :  12 z  :   0 
+Registers used: 10 out of 35 (28.6%)
 
 ATmega16 instruction use summary:
 .lds  :   0 .lds.l:   0 .sts  :   0 .sts.l:   0 adc   :   0 add   :   0 
-adiw  :   0 and   :   0 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 
+adiw  :   1 and   :   0 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 
 brbc  :   0 brbs  :   0 brcc  :   0 brcs  :   0 break :   0 breq  :   0 
 brge  :   0 brhc  :   0 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 
-brlt  :   0 brmi  :   0 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 
+brlt  :   0 brmi  :   0 brne  :  17 brpl  :   0 brsh  :   0 brtc  :   0 
 brts  :   0 brvc  :   0 brvs  :   0 bset  :   0 bst   :   0 call  :   0 
 cbi   :   0 cbr   :   0 clc   :   0 clh   :   0 cli   :   1 cln   :   0 
 clr   :   2 cls   :   0 clt   :   0 clv   :   0 clz   :   0 com   :   0 
-cp    :   0 cpc   :   0 cpi   :   0 cpse  :   0 dec   :   1 des   :   0 
+cp    :   0 cpc   :   0 cpi   :  15 cpse  :   0 dec   :   1 des   :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   0 inc   :   0 jmp   :  22 ld    :   0 ldd   :   0 ldi   :  27 
+in    :  16 inc   :   0 jmp   :  22 ld    :   1 ldd   :   3 ldi   :  61 
 lds   :   0 lpm   :   0 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
 mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   0 or    :   0 
-ori   :   0 out   :  42 pop   :   0 push  :   0 rcall :   0 ret   :   0 
-reti  :   0 rjmp  :   2 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
-sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   1 sbr   :   0 sbrc  :   0 
+ori   :   0 out   :  48 pop   :   0 push  :   0 rcall :  24 ret   :   3 
+reti  :   0 rjmp  :   5 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
+sbi   :   4 sbic  :   0 sbis  :   0 sbiw  :   1 sbr   :   0 sbrc  :   0 
 sbrs  :   0 sec   :   0 seh   :   0 sei   :   0 sen   :   0 ser   :   0 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
-st    :   2 std   :   0 sts   :   0 sub   :   0 subi  :   0 swap  :   0 
+st    :  10 std   :   0 sts   :   0 sub   :   0 subi  :   0 swap  :   0 
 tst   :   0 wdr   :   0 
-Instructions used: 10 out of 116 (8.6%)
+Instructions used: 18 out of 116 (15.5%)
 
 ATmega16 memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0000f8    248      0    248   16384   1.5%
+[.cseg] 0x000000 0x000202    514      0    514   16384   3.1%
 [.dseg] 0x000060 0x000160      0      0      0    1119   0.0%
 [.eseg] 0x000000 0x000000      0      0      0     512   0.0%
 
