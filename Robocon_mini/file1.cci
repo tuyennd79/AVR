@@ -1,0 +1,9 @@
+VERSION:3 SOURCE_TIMESTAMP:4959134F
+NODE:I LEVEL:0 LINE:1 "F:\Git_SourceCode\AVR\Robocon_mini\file1.h"
+NODE:V LEVEL:0 LINE:3 "data_sensor -> R4"
+NODE:F LEVEL:0 LINE:5 "Forward(unsigned int v_left,unsigned int v_right)"
+NODE:F LEVEL:0 LINE:15 "Quay(unsigned int v_right,unsigned int v_left)"
+NODE:F LEVEL:0 LINE:26 "Stop(void)"
+NODE:F LEVEL:0 LINE:35 "FirstRoad2(void)"
+NODE:F LEVEL:0 LINE:111 "FirstRoad3(void)"
+NODE:F LEVEL:0 LINE:188 "Rol(void)"
